@@ -5,11 +5,11 @@ from noneprompt import Choice, ListPrompt, CancelledError
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
 
 
-@click.group(alias="deploy")
+@click.group(cls=ClickAliasedGroup, invoke_without_command=True)
 @click.pass_context
 @run_async
 async def docker(ctx: click.Context):
-    """Manage bot deployment with docker."""
+    """Manage Bot Deployment with Docker."""
     if ctx.invoked_subcommand is not None:
         return
 

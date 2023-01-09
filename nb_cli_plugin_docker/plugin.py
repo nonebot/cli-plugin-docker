@@ -1,7 +1,11 @@
-from nb_cli.cli import cli
+from typing import cast
+
+from nb_cli.cli import CLIMainGroup, cli
 
 from .cli import docker
 
 
 def install():
-    cli.add_command(docker)
+    cli_ = cast(CLIMainGroup, cli)
+    cli_.add_command(docker)
+    cli_.add_aliases("docker", ["deploy"])
