@@ -30,6 +30,7 @@ pre-commit = "^2.16.0"
 nb-cli = { git = "https://github.com/nonebot/nb-cli.git" }
 
 [tool.poetry.plugins.nb]
+docker = "nb_cli_plugin_docker.plugin:install"
 
 [tool.black]
 line-length = 88
