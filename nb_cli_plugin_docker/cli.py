@@ -1,8 +1,11 @@
+from pathlib import Path
 from typing import List, cast
 
 import click
 from noneprompt import Choice, ListPrompt, CancelledError
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
+
+from .handler import generate_config_file
 
 
 @click.group(cls=ClickAliasedGroup, invoke_without_command=True)
@@ -35,3 +38,11 @@ async def docker(ctx: click.Context):
 
     sub_cmd = result.data
     await run_sync(ctx.invoke)(sub_cmd)
+
+
+@docker.command()
+@click.option("-d", "--cwd", default=".", help="The working directory.")
+@run_async
+async def generate(cwd: str):
+    """Generate Dockerfile and docker-compose.yml."""
+    await generate_config_file(cwd=Path(cwd))

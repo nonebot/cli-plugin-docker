@@ -1,0 +1,23 @@
+{% from "docker/_helpers.Dockerfile.jinja" import requirements_stage, reverse_config -%}
+
+{{ requirements_stage(python_version, build_backend) }}
+
+FROM python:{{ python_version }}
+
+WORKDIR /app
+
+ENV TZ Asia/Shanghai
+ENV PYTHONPATH=/app
+
+{{ reverse_config() }}
+
+ENV APP_MODULE _main:app
+
+COPY --from=requirements_stage {% if build_backend %}/tmp/requirements.txt {% endif %}/tmp/bot.py /app
+
+RUN pip install --no-cache-dir gunicorn uvicorn[standard]{% if build_backend %} \
+  && pip install --no-cache-dir -r /tmp/requirements.txt{% endif %}
+
+COPY . /app/
+
+CMD ["/start.sh"]

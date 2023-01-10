@@ -2,7 +2,10 @@
 
 import json
 import nonebot
+from nonebot.log import logger
 from nonebot.drivers import ReverseDriver
+
+logger.remove()
 
 {{ prepare_bot(adapters, builtin_plugins) }}
 
