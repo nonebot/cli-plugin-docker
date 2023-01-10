@@ -1,0 +1,17 @@
+version: "3"
+services:
+  nonebot:
+    build: .
+    {% if is_reverse %}
+    ports:
+      - ${PORT:-8080}:${PORT:-8080}
+    {% endif %}
+    env_file:
+      - .env.prod
+    environment:
+      - ENVIRONMENT=prod
+    {% if is_reverse %}
+      - HOST=${HOST:-0.0.0.0}
+      - PORT=${PORT:-8080}
+    {% endif %}
+    restart: always

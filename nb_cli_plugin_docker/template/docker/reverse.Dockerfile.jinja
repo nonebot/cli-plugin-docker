@@ -12,6 +12,7 @@ ENV PYTHONPATH=/app
 {{ reverse_config() }}
 
 ENV APP_MODULE _main:app
+ENV MAX_WORKERS 1
 
 COPY --from=requirements_stage {% if build_backend %}/tmp/requirements.txt {% endif %}/tmp/bot.py /app
 

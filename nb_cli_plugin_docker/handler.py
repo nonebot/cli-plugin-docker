@@ -204,6 +204,16 @@ async def generate_dockerfile(
     )
 
 
+async def generate_compose_file(
+    is_reverse: bool,
+    output_dir: Optional[Path] = None,
+):
+    path = (output_dir or Path.cwd()) / "docker-compose.yml"
+
+    t = templates.get_template("docker/docker-compose.yml.jinja")
+    path.write_text(await t.render_async(is_reverse=is_reverse))
+
+
 async def generate_config_file(
     adapters: Optional[List[SimpleInfo]] = None,
     builtin_plugins: Optional[List[str]] = None,
@@ -223,3 +233,4 @@ async def generate_config_file(
         )
 
     await generate_dockerfile(python_version, is_reverse, build_backend, cwd)
+    await generate_compose_file(is_reverse, cwd)
