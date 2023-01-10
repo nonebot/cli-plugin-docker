@@ -1,0 +1,10 @@
+{% from "project/_prepare.py.jinja" import prepare_bot %}
+
+import json
+import nonebot
+from nonebot.drivers import ReverseDriver
+
+{{ prepare_bot(adapters, builtin_plugins) }}
+
+driver = nonebot.get_driver()
+print(json.dumps(isinstance(driver, ReverseDriver)))
