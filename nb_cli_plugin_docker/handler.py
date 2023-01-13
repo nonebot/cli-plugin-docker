@@ -123,7 +123,7 @@ async def compose_build(
     )
 
 
-async def compose_log(
+async def compose_logs(
     compose_args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
@@ -133,7 +133,7 @@ async def compose_log(
     compose = await get_compose_command()
     return await asyncio.create_subprocess_exec(
         *compose.command,
-        "log",
+        "logs",
         *(compose_args or []),
         cwd=cwd,
         stdin=stdin,
