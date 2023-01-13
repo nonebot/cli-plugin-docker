@@ -543,10 +543,8 @@ description = "CLI for nonebot2"
 category = "main"
 optional = false
 python-versions = ">=3.8, <4.0"
-files = [
-    {file = "nb-cli-1.0.0.tar.gz", hash = "sha256:3df09c636c768a2a0ee2da543ef279f28606a1a6bdc4a14a2905ee2f625a8b99"},
-    {file = "nb_cli-1.0.0-py3-none-any.whl", hash = "sha256:5310be08f099631f914451f9e16ed93abc4111b491bd581319c20320815103b0"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 anyio = ">=3.6,<4.0"
@@ -564,6 +562,12 @@ typing-extensions = ">=4.4,<5.0"
 virtualenv = ">=20.17.1,<20.18.0"
 watchfiles = ">=0.16,<1.0"
 wcwidth = ">=0.2,<1.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/nonebot/nb-cli.git"
+reference = "HEAD"
+resolved_reference = "d241223161aabe44b71850f27cf5fa3a3edd0d40"
 
 [[package]]
 name = "nodeenv"
@@ -1061,4 +1065,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "15bd72a3340c8f368d263ab51aa4d7b4e364fd8609909185956e26ddef7a2746"
+content-hash = "5c675c058c5c1ce252813b0fdbc000498891dd83f444fc43a597c1129bc003e8"

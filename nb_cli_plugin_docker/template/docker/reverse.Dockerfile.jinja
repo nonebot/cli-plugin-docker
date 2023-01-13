@@ -1,4 +1,5 @@
 {% from "docker/_helpers.Dockerfile.jinja" import requirements_stage, reverse_config -%}
+# syntax=docker/dockerfile:1
 
 {{ requirements_stage(python_version, build_backend) }}
 
