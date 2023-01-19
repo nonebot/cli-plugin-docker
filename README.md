@@ -48,3 +48,9 @@ _✨ NoneBot2 命令行工具 Docker 插件 ✨_
 ```shell
 curl -fsSL https://get.docker.com | sudo sh
 ```
+
+## 安装插件
+
+```shell
+nb self install nb-cli-plugin-docker
+```
