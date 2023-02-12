@@ -7,6 +7,7 @@ from nb_cli import _
 from noneprompt import Choice, ListPrompt, CancelledError
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
 from nb_cli.handlers import (
+    detect_virtualenv,
     terminate_process,
     remove_signal_handler,
     register_signal_handler,
@@ -56,14 +57,33 @@ async def docker(ctx: click.Context):
 
 @docker.command()
 @click.option("-d", "--cwd", default=".", help="The working directory.")
+@click.option(
+    "--venv/--no-venv",
+    default=True,
+    help=_("Auto detect virtual environment."),
+    show_default=True,
+)
 @run_async
-async def generate(cwd: str):
+async def generate(cwd: str, venv: bool):
     """Generate Dockerfile and docker-compose.yml."""
-    await generate_config_file(cwd=Path(cwd))
+    if python_path := detect_virtualenv() if venv else None:
+        click.secho(
+            _("Using virtual environment: {python_path}").format(
+                python_path=python_path
+            ),
+            fg="green",
+        )
+    await generate_config_file(python_path=python_path, cwd=Path(cwd))
 
 
 @docker.command(aliases=["run"], context_settings={"ignore_unknown_options": True})
 @click.option("-d", "--cwd", default=".", help="The working directory.")
+@click.option(
+    "--venv/--no-venv",
+    default=True,
+    help=_("Auto detect virtual environment."),
+    show_default=True,
+)
 @click.option(
     "-f",
     "--force",
@@ -73,10 +93,17 @@ async def generate(cwd: str):
 )
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def up(cwd: str, force: bool, compose_args: List[str]):
+async def up(cwd: str, venv: bool, force: bool, compose_args: List[str]):
     """Deploy the bot."""
     if force or not Path(cwd, "Dockerfile").exists():
-        await generate_config_file(cwd=Path(cwd))
+        if python_path := detect_virtualenv() if venv else None:
+            click.secho(
+                _("Using virtual environment: {python_path}").format(
+                    python_path=python_path
+                ),
+                fg="green",
+            )
+        await generate_config_file(python_path=python_path, cwd=Path(cwd))
 
     should_exit = asyncio.Event()
 

@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-nb-cli = "^1.0.1"
+nb-cli = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
