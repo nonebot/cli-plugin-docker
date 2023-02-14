@@ -1,4 +1,4 @@
-{% from "docker/_helpers.Dockerfile.jinja" import requirements_stage, reverse_config -%}
+{% from "docker/_helpers.Dockerfile.jinja" import requirements_stage -%}
 # syntax=docker/dockerfile:1
 
 {{ requirements_stage(python_version, build_backend) }}
@@ -10,15 +10,19 @@ WORKDIR /app
 ENV TZ Asia/Shanghai
 ENV PYTHONPATH=/app
 
-{{ reverse_config() }}
+COPY ./docker/_main.py ./docker/gunicorn_conf.py ./docker/start.sh /
 
 ENV APP_MODULE _main:app
 ENV MAX_WORKERS 1
 
-COPY --from=requirements_stage {% if build_backend %}/tmp/requirements.txt {% endif %}/tmp/bot.py /app
+COPY --from=requirements_stage /tmp/bot.py /app
+
+{% if build_backend %}
+COPY --from=build-stage /wheel /wheel
+{% endif %}
 
 RUN pip install --no-cache-dir gunicorn uvicorn[standard]{% if build_backend %} \
-  && pip install --no-cache-dir -r /tmp/requirements.txt{% endif %}
+  && pip install --no-cache-dir --no-index --force-reinstall --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel{% endif %}
 
 COPY . /app/
 

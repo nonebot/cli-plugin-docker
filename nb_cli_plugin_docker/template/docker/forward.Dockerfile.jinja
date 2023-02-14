@@ -3,17 +3,18 @@
 
 {{ requirements_stage(python_version, build_backend) }}
 
-FROM python:{{ python_version }}
+FROM python:{{ python_version }}-slim
 
 WORKDIR /app
 
 ENV TZ Asia/Shanghai
 ENV PYTHONPATH=/app
 
-COPY --from=requirements_stage {% if build_backend %}/tmp/requirements.txt {% endif %}/tmp/bot.py /app
+COPY --from=requirements_stage /tmp/bot.py /app
 
 {% if build_backend %}
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+COPY --from=build-stage /wheel /wheel
+RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel
 {% endif %}
 
 COPY . /app/

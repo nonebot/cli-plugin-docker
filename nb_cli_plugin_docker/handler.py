@@ -190,47 +190,19 @@ async def generate_dockerfile(
     python_version: str,
     is_reverse: bool,
     build_backend: Optional[str],
-    output_dir: Optional[Path] = None,
 ):
-    path = (output_dir or Path.cwd()) / "Dockerfile"
-
     t = templates.get_template(
         "docker/reverse.Dockerfile.jinja"
         if is_reverse
         else "docker/forward.Dockerfile.jinja"
     )
-    path.write_text(
-        await t.render_async(python_version=python_version, build_backend=build_backend)
+    return await t.render_async(
+        python_version=python_version, build_backend=build_backend
     )
 
 
 async def generate_compose_file(
     is_reverse: bool,
-    output_dir: Optional[Path] = None,
 ):
-    path = (output_dir or Path.cwd()) / "docker-compose.yml"
-
     t = templates.get_template("docker/docker-compose.yml.jinja")
-    path.write_text(await t.render_async(is_reverse=is_reverse))
-
-
-async def generate_config_file(
-    adapters: Optional[List[SimpleInfo]] = None,
-    builtin_plugins: Optional[List[str]] = None,
-    python_path: Optional[str] = None,
-    cwd: Optional[Path] = None,
-):
-    python_version = await get_python_version(python_path)
-    python_version = f"{python_version['major']}.{python_version['minor']}"
-    is_reverse = await get_driver_type(adapters, builtin_plugins, python_path, cwd)
-    build_backend = await get_build_backend()
-
-    if build_backend is None:
-        click.secho(
-            "No build backend found, requirements will not be installed! "
-            'Use one of "poetry", "pdm", "requirements.txt" to install requirements.',
-            fg="yellow",
-        )
-
-    await generate_dockerfile(python_version, is_reverse, build_backend, cwd)
-    await generate_compose_file(is_reverse, cwd)
+    return await t.render_async(is_reverse=is_reverse)
