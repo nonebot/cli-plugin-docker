@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nb-cli-plugin-docker"
-version = "0.1.0"
+version = "0.2.0"
 description = "docker support for nb-cli"
 authors = ["yanyongyu <yyy@nonebot.dev>"]
 license = "MIT"
@@ -21,6 +21,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 nb-cli = "^1.0.2"
+noneprompt = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.10.1"
