@@ -101,6 +101,9 @@ async def generate(cwd: Path, venv: bool, force: bool):
     compose_file = await generate_compose_file(is_reverse=is_reverse)
     await safe_write_file(cwd / "docker-compose.yml", compose_file, force=force)
 
+    if not is_reverse:
+        return
+
     for file in (Path(__file__).parent / "docker").iterdir():
         await safe_write_file(cwd / "docker" / file.name, file.read_text(), force=force)
 
