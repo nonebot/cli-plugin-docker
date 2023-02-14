@@ -30,6 +30,8 @@ templates = Environment(
     ),
     enable_async=True,
 )
+templates.globals.update(cli_templates.globals)
+templates.filters.update(cli_templates.filters)
 
 
 @dataclass

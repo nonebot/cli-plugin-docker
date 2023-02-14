@@ -121,6 +121,7 @@ async def generate(cwd: Path, venv: bool, force: bool):
     help="Force to re-generate the Dockerfile.",
 )
 @click.argument("compose_args", nargs=-1)
+@click.pass_context
 @run_async
 async def up(
     ctx: click.Context, cwd: Path, venv: bool, force: bool, compose_args: List[str]

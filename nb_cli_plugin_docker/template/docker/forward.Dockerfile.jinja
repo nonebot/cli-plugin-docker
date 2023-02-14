@@ -1,5 +1,4 @@
 {% from "docker/_helpers.Dockerfile.jinja" import requirements_stage, reverse_config -%}
-# syntax=docker/dockerfile:1
 
 {{ requirements_stage(python_version, build_backend) }}
 
@@ -13,7 +12,7 @@ ENV PYTHONPATH=/app
 COPY --from=requirements_stage /tmp/bot.py /app
 
 {% if build_backend %}
-COPY --from=build-stage /wheel /wheel
+COPY --from=requirements_stage /wheel /wheel
 RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel
 {% endif %}
 
