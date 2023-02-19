@@ -49,7 +49,7 @@ extra_standard_library = ["typing_extensions"]
 [tool.pyright]
 pythonVersion = "3.8"
 pythonPlatform = "All"
-ignore = ["nb_cli_plugin_docker/docker/"]
+ignore = ["nb_cli_plugin_docker/static/"]
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]

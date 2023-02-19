@@ -7,7 +7,7 @@ from noneprompt import Choice, ListPrompt, CancelledError
 from nb_cli.handlers import detect_virtualenv, get_python_version
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
 
-from .utils import safe_write_file
+from .utils import safe_copy_dir, safe_write_file
 from .handler import (
     compose_ps,
     compose_up,
@@ -90,22 +90,27 @@ async def generate(ctx: click.Context, cwd: Path, venv: bool, force: bool):
     is_reverse = await get_driver_type(python_path=python_path, cwd=cwd)
     build_backend = await get_build_backend()
 
-    dockerfile = await generate_dockerfile(
-        python_version=python_version,
-        is_reverse=is_reverse,
-        build_backend=build_backend,
-    )
-    await safe_write_file(cwd / "Dockerfile", dockerfile, force=force)
+    try:
+        dockerfile = await generate_dockerfile(
+            python_version=python_version,
+            is_reverse=is_reverse,
+            build_backend=build_backend,
+        )
+        await safe_write_file(cwd / "Dockerfile", dockerfile, force=force)
 
-    compose_file = await generate_compose_file(is_reverse=is_reverse)
-    await safe_write_file(cwd / "docker-compose.yml", compose_file, force=force)
+        compose_file = await generate_compose_file(is_reverse=is_reverse)
+        await safe_write_file(cwd / "docker-compose.yml", compose_file, force=force)
 
-    if not is_reverse:
-        return
+        await safe_copy_dir(
+            Path(__file__).parent / "static" / "common", cwd, force=force
+        )
 
-    (cwd / "docker").mkdir(exist_ok=True)
-    for file in (Path(__file__).parent / "docker").iterdir():
-        await safe_write_file(cwd / "docker" / file.name, file.read_text(), force=force)
+        if is_reverse:
+            await safe_copy_dir(
+                Path(__file__).parent / "static" / "reverse", cwd, force=force
+            )
+    except CancelledError:
+        ctx.exit()
 
 
 @docker.command(aliases=["run"], context_settings={"ignore_unknown_options": True})

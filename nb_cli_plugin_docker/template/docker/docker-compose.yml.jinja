@@ -1,17 +1,23 @@
 version: "3"
+
+{% if is_reverse %}
+x-config-host: &config-host ${HOST:-0.0.0.0}
+x-config-port: &config-port ${PORT:-8080}
+{% endif %}
+
 services:
   nonebot:
     build: .
     {% if is_reverse %}
     ports:
-      - ${PORT:-8080}:${PORT:-8080}
+      - *config-port
     {% endif %}
     env_file:
       - .env.prod
     environment:
-      - ENVIRONMENT=prod
-    {% if is_reverse %}
-      - HOST=${HOST:-0.0.0.0}
-      - PORT=${PORT:-8080}
-    {% endif %}
+      ENVIRONMENT: prod
+      {% if is_reverse %}
+      HOST: *config-host
+      PORT: *config-port
+      {% endif %}
     restart: always
