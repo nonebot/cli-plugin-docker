@@ -9,6 +9,7 @@ from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
 
 from .utils import safe_write_file
 from .handler import (
+    compose_ps,
     compose_up,
     compose_down,
     compose_logs,
@@ -161,4 +162,14 @@ async def build(cwd: Path, compose_args: List[str]):
 async def logs(cwd: Path, compose_args: List[str]):
     """View the bot logs."""
     proc = await compose_logs(compose_args, cwd=cwd)
+    await proc.wait()
+
+
+@docker.command(context_settings={"ignore_unknown_options": True})
+@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
+@click.argument("compose_args", nargs=-1)
+@run_async
+async def ps(cwd: Path, compose_args: List[str]):
+    """View the bot service status."""
+    proc = await compose_ps(compose_args, cwd=cwd)
     await proc.wait()
