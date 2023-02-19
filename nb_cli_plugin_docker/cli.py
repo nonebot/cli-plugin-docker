@@ -69,8 +69,9 @@ async def docker(ctx: click.Context):
     default=False,
     help="Force to re-generate the Dockerfile.",
 )
+@click.pass_context
 @run_async
-async def generate(cwd: Path, venv: bool, force: bool):
+async def generate(ctx: click.Context, cwd: Path, venv: bool, force: bool):
     """Generate Dockerfile and docker-compose.yml."""
     if python_path := detect_virtualenv() if venv else None:
         click.secho(
@@ -79,6 +80,10 @@ async def generate(cwd: Path, venv: bool, force: bool):
             ),
             fg="green",
         )
+
+    if not cwd.is_dir():
+        click.secho(f"Directory {cwd} does not exist.", fg="red")
+        ctx.exit(1)
 
     python_version = await get_python_version(python_path)
     python_version = f"{python_version['major']}.{python_version['minor']}"
@@ -98,6 +103,7 @@ async def generate(cwd: Path, venv: bool, force: bool):
     if not is_reverse:
         return
 
+    (cwd / "docker").mkdir(exist_ok=True)
     for file in (Path(__file__).parent / "docker").iterdir():
         await safe_write_file(cwd / "docker" / file.name, file.read_text(), force=force)
 

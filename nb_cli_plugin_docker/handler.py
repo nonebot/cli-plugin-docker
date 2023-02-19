@@ -209,9 +209,7 @@ async def get_build_backend() -> Optional[Literal["poetry", "pdm", "pip"]]:
 
 
 async def generate_dockerfile(
-    python_version: str,
-    is_reverse: bool,
-    build_backend: Optional[str],
+    python_version: str, is_reverse: bool, build_backend: Optional[str]
 ):
     t = templates.get_template(
         "docker/reverse.Dockerfile.jinja"
@@ -223,8 +221,6 @@ async def generate_dockerfile(
     )
 
 
-async def generate_compose_file(
-    is_reverse: bool,
-):
+async def generate_compose_file(is_reverse: bool):
     t = templates.get_template("docker/docker-compose.yml.jinja")
     return await t.render_async(is_reverse=is_reverse)
