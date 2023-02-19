@@ -1,18 +1,11 @@
-import asyncio
 from pathlib import Path
 from typing import List, cast
 
 import click
 from nb_cli import _
 from noneprompt import Choice, ListPrompt, CancelledError
+from nb_cli.handlers import detect_virtualenv, get_python_version
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
-from nb_cli.handlers import (
-    detect_virtualenv,
-    terminate_process,
-    get_python_version,
-    remove_signal_handler,
-    register_signal_handler,
-)
 
 from .utils import safe_write_file
 from .handler import (
@@ -137,22 +130,8 @@ async def up(
     ):
         await run_sync(ctx.invoke)(generate)
 
-    should_exit = asyncio.Event()
-
-    def shutdown(signum, frame):
-        should_exit.set()
-
-    async def wait_for_shutdown():
-        await should_exit.wait()
-        await terminate_process(proc)
-
-    register_signal_handler(shutdown)
     proc = await compose_up(compose_args, cwd=cwd)
-    task = asyncio.create_task(wait_for_shutdown())
     await proc.wait()
-    should_exit.set()
-    await task
-    remove_signal_handler(shutdown)
 
 
 @docker.command(aliases=["stop"], context_settings={"ignore_unknown_options": True})
@@ -161,22 +140,8 @@ async def up(
 @run_async
 async def down(cwd: Path, compose_args: List[str]):
     """Undeploy the bot."""
-    should_exit = asyncio.Event()
-
-    def shutdown(signum, frame):
-        should_exit.set()
-
-    async def wait_for_shutdown():
-        await should_exit.wait()
-        await terminate_process(proc)
-
-    register_signal_handler(shutdown)
     proc = await compose_down(compose_args, cwd=cwd)
-    task = asyncio.create_task(wait_for_shutdown())
     await proc.wait()
-    should_exit.set()
-    await task
-    remove_signal_handler(shutdown)
 
 
 @docker.command(context_settings={"ignore_unknown_options": True})
@@ -185,22 +150,8 @@ async def down(cwd: Path, compose_args: List[str]):
 @run_async
 async def build(cwd: Path, compose_args: List[str]):
     """Build the bot image."""
-    should_exit = asyncio.Event()
-
-    def shutdown(signum, frame):
-        should_exit.set()
-
-    async def wait_for_shutdown():
-        await should_exit.wait()
-        await terminate_process(proc)
-
-    register_signal_handler(shutdown)
     proc = await compose_build(compose_args, cwd=cwd)
-    task = asyncio.create_task(wait_for_shutdown())
     await proc.wait()
-    should_exit.set()
-    await task
-    remove_signal_handler(shutdown)
 
 
 @docker.command(context_settings={"ignore_unknown_options": True})
@@ -209,19 +160,5 @@ async def build(cwd: Path, compose_args: List[str]):
 @run_async
 async def logs(cwd: Path, compose_args: List[str]):
     """View the bot logs."""
-    should_exit = asyncio.Event()
-
-    def shutdown(signum, frame):
-        should_exit.set()
-
-    async def wait_for_shutdown():
-        await should_exit.wait()
-        await terminate_process(proc)
-
-    register_signal_handler(shutdown)
     proc = await compose_logs(compose_args, cwd=cwd)
-    task = asyncio.create_task(wait_for_shutdown())
     await proc.wait()
-    should_exit.set()
-    await task
-    remove_signal_handler(shutdown)

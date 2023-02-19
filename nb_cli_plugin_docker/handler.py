@@ -4,7 +4,6 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import IO, TYPE_CHECKING, Any, List, Tuple, Union, Literal, Optional, cast
 
-import click
 from nb_cli import cache
 from jinja2 import Environment, FileSystemLoader
 from nb_cli.config import GLOBAL_CONFIG, SimpleInfo
@@ -13,7 +12,7 @@ from nb_cli.handlers import (
     requires_nonebot,
     get_default_python,
     get_nonebot_config,
-    get_python_version,
+    ensure_process_terminated,
 )
 
 from .exception import GetDriverTypeError, ComposeNotAvailable
@@ -66,7 +65,8 @@ else:
         raise ComposeNotAvailable
 
 
-async def compose_up(
+@ensure_process_terminated
+async def call_compose(
     compose_args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
@@ -76,10 +76,23 @@ async def compose_up(
     compose = await get_compose_command()
     return await asyncio.create_subprocess_exec(
         *compose.command,
-        "up",
-        "-d",
-        "--build",
         *(compose_args or []),
+        cwd=cwd,
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+    )
+
+
+async def compose_up(
+    compose_args: Optional[List[str]] = None,
+    cwd: Optional[Path] = None,
+    stdin: Optional[Union[IO[Any], int]] = None,
+    stdout: Optional[Union[IO[Any], int]] = None,
+    stderr: Optional[Union[IO[Any], int]] = None,
+) -> asyncio.subprocess.Process:
+    return await call_compose(
+        ["up", "-d", "--build", *(compose_args or [])],
         cwd=cwd,
         stdin=stdin,
         stdout=stdout,
@@ -94,11 +107,8 @@ async def compose_down(
     stdout: Optional[Union[IO[Any], int]] = None,
     stderr: Optional[Union[IO[Any], int]] = None,
 ) -> asyncio.subprocess.Process:
-    compose = await get_compose_command()
-    return await asyncio.create_subprocess_exec(
-        *compose.command,
-        "down",
-        *(compose_args or []),
+    return await call_compose(
+        ["down", *(compose_args or [])],
         cwd=cwd,
         stdin=stdin,
         stdout=stdout,
@@ -113,11 +123,8 @@ async def compose_build(
     stdout: Optional[Union[IO[Any], int]] = None,
     stderr: Optional[Union[IO[Any], int]] = None,
 ) -> asyncio.subprocess.Process:
-    compose = await get_compose_command()
-    return await asyncio.create_subprocess_exec(
-        *compose.command,
-        "build",
-        *(compose_args or []),
+    return await call_compose(
+        ["build", *(compose_args or [])],
         cwd=cwd,
         stdin=stdin,
         stdout=stdout,
@@ -132,11 +139,24 @@ async def compose_logs(
     stdout: Optional[Union[IO[Any], int]] = None,
     stderr: Optional[Union[IO[Any], int]] = None,
 ) -> asyncio.subprocess.Process:
-    compose = await get_compose_command()
-    return await asyncio.create_subprocess_exec(
-        *compose.command,
-        "logs",
-        *(compose_args or []),
+    return await call_compose(
+        ["logs", *(compose_args or [])],
+        cwd=cwd,
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+    )
+
+
+async def compose_ps(
+    compose_args: Optional[List[str]] = None,
+    cwd: Optional[Path] = None,
+    stdin: Optional[Union[IO[Any], int]] = None,
+    stdout: Optional[Union[IO[Any], int]] = None,
+    stderr: Optional[Union[IO[Any], int]] = None,
+) -> asyncio.subprocess.Process:
+    return await call_compose(
+        ["ps", *(compose_args or [])],
         cwd=cwd,
         stdin=stdin,
         stdout=stdout,
