@@ -45,12 +45,21 @@ _✨ NoneBot2 命令行工具 Docker 插件 ✨_
 
 官方 Linux 快速安装一键脚本：
 
-```shell
+```bash
 curl -fsSL https://get.docker.com | sudo sh
 ```
 
 ## 安装插件
 
-```shell
+```bash
 nb self install nb-cli-plugin-docker
+```
+
+## 使用插件
+
+```bash
+nb docker
+# 其他别名
+# nb deploy
+# nb compose
 ```
