@@ -24,7 +24,7 @@ async def safe_write_file(
         return
 
     return (
-        file_path.write_text(content)
+        file_path.write_text(content, encoding="utf-8")
         if isinstance(content, str)
         else file_path.write_bytes(content)
     )
