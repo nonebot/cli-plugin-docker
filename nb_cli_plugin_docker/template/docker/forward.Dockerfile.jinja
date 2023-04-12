@@ -13,8 +13,10 @@ COPY --from=requirements_stage /tmp/bot.py /app
 
 {% if build_backend %}
 COPY --from=requirements_stage /wheel /wheel
-RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel
 {% endif %}
+
+RUN pip install --no-cache-dir nonebot2{% if build_backend %} \
+  && pip install --no-cache-dir --no-index --force-reinstall --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel{% endif %}
 
 COPY . /app/
 
