@@ -6,9 +6,10 @@ from typing import IO, TYPE_CHECKING, Any, List, Tuple, Union, Literal, Optional
 
 from nb_cli import cache
 from jinja2 import Environment, FileSystemLoader
-from nb_cli.config import GLOBAL_CONFIG, SimpleInfo
 from nb_cli.handlers import templates as cli_templates
+from nb_cli.config import GLOBAL_CONFIG, SimpleInfo, ConfigManager
 from nb_cli.handlers import (
+    get_project_root,
     requires_nonebot,
     get_default_python,
     get_nonebot_config,
@@ -73,6 +74,9 @@ async def call_compose(
     stdout: Optional[Union[IO[Any], int]] = None,
     stderr: Optional[Union[IO[Any], int]] = None,
 ) -> asyncio.subprocess.Process:
+    if cwd is None:
+        cwd = get_project_root()
+
     compose = await get_compose_command()
     return await asyncio.create_subprocess_exec(
         *compose.command,
@@ -178,6 +182,8 @@ async def get_driver_type(
         builtin_plugins = bot_config.builtin_plugins
     if python_path is None:
         python_path = await get_default_python()
+    if cwd is None:
+        cwd = get_project_root()
 
     t = templates.get_template("docker/get_driver_type.py.jinja")
     proc = await asyncio.create_subprocess_exec(
@@ -197,14 +203,19 @@ async def get_driver_type(
     return json.loads(stdout.strip())
 
 
-async def get_build_backend() -> Optional[Literal["poetry", "pdm", "pip"]]:
-    if data := GLOBAL_CONFIG._get_data():
+async def get_build_backend(
+    config_manager: Optional[ConfigManager] = None,
+) -> Optional[Literal["poetry", "pdm", "pip"]]:
+    if config_manager is None:
+        config_manager = GLOBAL_CONFIG
+
+    if data := config_manager._get_data():
         backend = data.get("build-system", {}).get("build-backend", "")
         if "poetry" in backend:
             return "poetry"
         elif "pdm" in backend:
             return "pdm"
-    if (GLOBAL_CONFIG.file.parent / "requirements.txt").exists():
+    if (config_manager.project_root / "requirements.txt").exists():
         return "pip"
 
 

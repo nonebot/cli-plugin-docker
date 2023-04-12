@@ -3,9 +3,10 @@ from typing import List, cast
 
 import click
 from nb_cli import _
+from nb_cli.config import ConfigManager
 from noneprompt import Choice, ListPrompt, CancelledError
-from nb_cli.handlers import detect_virtualenv, get_python_version
 from nb_cli.cli import CLI_DEFAULT_STYLE, ClickAliasedGroup, run_sync, run_async
+from nb_cli.handlers import get_project_root, get_default_python, get_python_version
 
 from .utils import safe_copy_dir, safe_write_file
 from .handler import (
@@ -55,13 +56,6 @@ async def docker(ctx: click.Context):
 
 
 @docker.command()
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
-@click.option(
-    "--venv/--no-venv",
-    default=True,
-    help=_("Auto detect virtual environment."),
-    show_default=True,
-)
 @click.option(
     "-f",
     "--force",
@@ -71,24 +65,18 @@ async def docker(ctx: click.Context):
 )
 @click.pass_context
 @run_async
-async def generate(ctx: click.Context, cwd: Path, venv: bool, force: bool):
+async def generate(ctx: click.Context, force: bool):
     """Generate Dockerfile and docker-compose.yml."""
-    if python_path := detect_virtualenv() if venv else None:
-        click.secho(
-            _("Using virtual environment: {python_path}").format(
-                python_path=python_path
-            ),
-            fg="green",
-        )
+    python_path = await get_default_python()
+    cwd = get_project_root()
 
-    if not cwd.is_dir():
-        click.secho(f"Directory {cwd} does not exist.", fg="red")
-        ctx.exit(1)
-
-    python_version = await get_python_version(python_path)
+    python_version = await get_python_version(python_path=python_path)
     python_version = f"{python_version['major']}.{python_version['minor']}"
+
     is_reverse = await get_driver_type(python_path=python_path, cwd=cwd)
-    build_backend = await get_build_backend()
+    build_backend = await get_build_backend(
+        config_manager=ConfigManager(working_dir=cwd, python_path=python_path)
+    )
 
     try:
         dockerfile = await generate_dockerfile(
@@ -114,13 +102,6 @@ async def generate(ctx: click.Context, cwd: Path, venv: bool, force: bool):
 
 
 @docker.command(aliases=["run"], context_settings={"ignore_unknown_options": True})
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
-@click.option(
-    "--venv/--no-venv",
-    default=True,
-    help=_("Auto detect virtual environment."),
-    show_default=True,
-)
 @click.option(
     "-f",
     "--force",
@@ -131,10 +112,10 @@ async def generate(ctx: click.Context, cwd: Path, venv: bool, force: bool):
 @click.argument("compose_args", nargs=-1)
 @click.pass_context
 @run_async
-async def up(
-    ctx: click.Context, cwd: Path, venv: bool, force: bool, compose_args: List[str]
-):
+async def up(ctx: click.Context, force: bool, compose_args: List[str]):
     """Deploy the bot."""
+    cwd = get_project_root()
+
     if (
         force
         or not Path(cwd, "Dockerfile").exists()
@@ -147,40 +128,36 @@ async def up(
 
 
 @docker.command(aliases=["stop"], context_settings={"ignore_unknown_options": True})
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def down(cwd: Path, compose_args: List[str]):
+async def down(compose_args: List[str]):
     """Undeploy the bot."""
-    proc = await compose_down(compose_args, cwd=cwd)
+    proc = await compose_down(compose_args)
     await proc.wait()
 
 
 @docker.command(context_settings={"ignore_unknown_options": True})
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def build(cwd: Path, compose_args: List[str]):
+async def build(compose_args: List[str]):
     """Build the bot image."""
-    proc = await compose_build(compose_args, cwd=cwd)
+    proc = await compose_build(compose_args)
     await proc.wait()
 
 
 @docker.command(context_settings={"ignore_unknown_options": True})
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def logs(cwd: Path, compose_args: List[str]):
+async def logs(compose_args: List[str]):
     """View the bot logs."""
-    proc = await compose_logs(compose_args, cwd=cwd)
+    proc = await compose_logs(compose_args)
     await proc.wait()
 
 
 @docker.command(context_settings={"ignore_unknown_options": True})
-@click.option("-d", "--cwd", default=".", type=Path, help="The working directory.")
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def ps(cwd: Path, compose_args: List[str]):
+async def ps(compose_args: List[str]):
     """View the bot service status."""
-    proc = await compose_ps(compose_args, cwd=cwd)
+    proc = await compose_ps(compose_args)
     await proc.wait()

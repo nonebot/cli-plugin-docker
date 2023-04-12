@@ -20,7 +20,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-nb-cli = "^1.0.5"
+nb-cli = "^1.1.0"
 noneprompt = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
