@@ -13,14 +13,14 @@ _✨ NoneBot2 命令行工具 Docker 插件 ✨_
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/nonebot/nb-cli-plugin-docker/master/LICENSE">
-    <img src="https://img.shields.io/github/license/nonebot/nb-cli-plugin-docker" alt="license">
+    <img src="https://img.shields.io/github/license/nonebot/cli-plugin-docker" alt="license">
   </a>
   <a href="https://pypi.python.org/pypi/nb-cli-plugin-docker">
     <img src="https://img.shields.io/pypi/v/nb-cli-plugin-docker" alt="pypi">
   </a>
   <img src="https://img.shields.io/badge/python-3.8+-blue" alt="python">
   <a href="https://results.pre-commit.ci/latest/github/nonebot/nb-cli-plugin-docker/master">
-    <img src="https://results.pre-commit.ci/badge/github/nonebot/nb-cli-plugin-docker/master.svg" alt="pre-commit" />
+    <img src="https://results.pre-commit.ci/badge/github/nonebot/cli-plugin-docker/master.svg" alt="pre-commit" />
   </a>
   <br />
   <a href="https://jq.qq.com/?_wv=1027&k=5OFifDh">
