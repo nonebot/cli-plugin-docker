@@ -42,8 +42,7 @@ class Compose:
 
 if TYPE_CHECKING:
 
-    async def get_compose_command() -> Compose:
-        ...
+    async def get_compose_command() -> Compose: ...
 
 else:
 
