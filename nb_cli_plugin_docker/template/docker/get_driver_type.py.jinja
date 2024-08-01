@@ -3,11 +3,11 @@
 import json
 import nonebot
 from nonebot.log import logger
-from nonebot.drivers import ReverseDriver
+from nonebot.drivers import ASGIMixin
 
 logger.remove()
 
 {{ prepare_bot(adapters, builtin_plugins) }}
 
 driver = nonebot.get_driver()
-print(json.dumps(isinstance(driver, ReverseDriver)))
+print(json.dumps(isinstance(driver, ASGIMixin)))
