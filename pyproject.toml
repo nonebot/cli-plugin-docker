@@ -15,19 +15,20 @@ classifiers = [
   "Framework :: Robot Framework :: Library",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3"
+  "Programming Language :: Python :: 3",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 nb-cli = "^1.1.0"
 noneprompt = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
+ruff = "^0.5.0"
 isort = "^5.10.1"
-black = "^22.3.0"
+black = "^24.0.0"
 nonemoji = "^0.1.2"
-pre-commit = "^2.16.0"
+pre-commit = "^3.0.0"
 
 [tool.poetry.plugins.nb]
 docker = "nb_cli_plugin_docker.plugin:install"
@@ -46,10 +47,47 @@ skip_gitignore = true
 force_sort_within_sections = true
 extra_standard_library = ["typing_extensions"]
 
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+  "F",     # Pyflakes
+  "W",     # pycodestyle warnings
+  "E",     # pycodestyle errors
+  "UP",    # pyupgrade
+  "ASYNC", # flake8-async
+  "C4",    # flake8-comprehensions
+  "T10",   # flake8-debugger
+  "T20",   # flake8-print
+  "PYI",   # flake8-pyi
+  "PT",    # flake8-pytest-style
+  "Q",     # flake8-quotes
+  "RUF",   # Ruff-specific rules
+]
+ignore = [
+  "E402",   # module-import-not-at-top-of-file
+  "UP037",  # quoted-annotation
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
 [tool.pyright]
-pythonVersion = "3.8"
+pythonVersion = "3.9"
 pythonPlatform = "All"
+defineConstant = { PYDANTIC_V2 = true }
+
 ignore = ["nb_cli_plugin_docker/static/"]
+
+typeCheckingMode = "standard"
+reportShadowedImports = false
+disableBytesTypePromotions = true
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]

@@ -1,5 +1,5 @@
+from typing import cast
 from pathlib import Path
-from typing import List, cast
 
 import click
 from nb_cli import _
@@ -33,7 +33,7 @@ async def docker(ctx: click.Context):
     command = cast(ClickAliasedGroup, ctx.command)
 
     # auto discover sub commands and scripts
-    choices: List[Choice[click.Command]] = []
+    choices: list[Choice[click.Command]] = []
     for sub_cmd_name in await run_sync(command.list_commands)(ctx):
         if sub_cmd := await run_sync(command.get_command)(ctx, sub_cmd_name):
             choices.append(
@@ -112,7 +112,7 @@ async def generate(ctx: click.Context, force: bool):
 @click.argument("compose_args", nargs=-1)
 @click.pass_context
 @run_async
-async def up(ctx: click.Context, force: bool, compose_args: List[str]):
+async def up(ctx: click.Context, force: bool, compose_args: list[str]):
     """Deploy the bot."""
     cwd = get_project_root()
 
@@ -130,7 +130,7 @@ async def up(ctx: click.Context, force: bool, compose_args: List[str]):
 @docker.command(aliases=["stop"], context_settings={"ignore_unknown_options": True})
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def down(compose_args: List[str]):
+async def down(compose_args: list[str]):
     """Undeploy the bot."""
     proc = await compose_down(compose_args)
     await proc.wait()
@@ -139,7 +139,7 @@ async def down(compose_args: List[str]):
 @docker.command(context_settings={"ignore_unknown_options": True})
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def build(compose_args: List[str]):
+async def build(compose_args: list[str]):
     """Build the bot image."""
     proc = await compose_build(compose_args)
     await proc.wait()
@@ -148,7 +148,7 @@ async def build(compose_args: List[str]):
 @docker.command(context_settings={"ignore_unknown_options": True})
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def logs(compose_args: List[str]):
+async def logs(compose_args: list[str]):
     """View the bot logs."""
     proc = await compose_logs(compose_args)
     await proc.wait()
@@ -157,7 +157,7 @@ async def logs(compose_args: List[str]):
 @docker.command(context_settings={"ignore_unknown_options": True})
 @click.argument("compose_args", nargs=-1)
 @run_async
-async def ps(compose_args: List[str]):
+async def ps(compose_args: list[str]):
     """View the bot service status."""
     proc = await compose_ps(compose_args)
     await proc.wait()

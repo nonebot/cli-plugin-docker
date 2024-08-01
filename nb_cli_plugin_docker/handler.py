@@ -2,7 +2,7 @@ import json
 import asyncio
 from pathlib import Path
 from dataclasses import dataclass
-from typing import IO, TYPE_CHECKING, Any, List, Tuple, Union, Literal, Optional, cast
+from typing import IO, TYPE_CHECKING, Any, Union, Literal, Optional, cast
 
 from nb_cli import cache
 from jinja2 import Environment, FileSystemLoader
@@ -36,7 +36,7 @@ templates.filters.update(cli_templates.filters)
 
 @dataclass
 class Compose:
-    command: Tuple[str, ...]
+    command: tuple[str, ...]
     info: str
 
 
@@ -67,7 +67,7 @@ else:
 
 @ensure_process_terminated
 async def call_compose(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -88,7 +88,7 @@ async def call_compose(
 
 
 async def compose_up(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -104,7 +104,7 @@ async def compose_up(
 
 
 async def compose_down(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -120,7 +120,7 @@ async def compose_down(
 
 
 async def compose_build(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -136,7 +136,7 @@ async def compose_build(
 
 
 async def compose_logs(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -152,7 +152,7 @@ async def compose_logs(
 
 
 async def compose_ps(
-    compose_args: Optional[List[str]] = None,
+    compose_args: Optional[list[str]] = None,
     cwd: Optional[Path] = None,
     stdin: Optional[Union[IO[Any], int]] = None,
     stdout: Optional[Union[IO[Any], int]] = None,
@@ -169,8 +169,8 @@ async def compose_ps(
 
 @requires_nonebot
 async def get_driver_type(
-    adapters: Optional[List[SimpleInfo]] = None,
-    builtin_plugins: Optional[List[str]] = None,
+    adapters: Optional[list[SimpleInfo]] = None,
+    builtin_plugins: Optional[list[str]] = None,
     python_path: Optional[str] = None,
     cwd: Optional[Path] = None,
 ) -> bool:
