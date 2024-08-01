@@ -9,9 +9,11 @@
     "vscode": {
       "settings": {
         "python.analysis.diagnosticMode": "workspace",
+        "ruff.organizeImports": false,
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
             "source.organizeImports": "explicit"
           }
         },
