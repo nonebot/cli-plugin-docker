@@ -197,9 +197,12 @@ async def get_driver_type(
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
-        raise GetDriverTypeError(stderr)
+        raise GetDriverTypeError(stdout, stderr)
 
-    return json.loads(stdout.strip())
+    try:
+        return json.loads(stdout.strip())
+    except Exception as e:
+        raise GetDriverTypeError(stdout, stderr) from e
 
 
 async def get_build_backend(
@@ -219,11 +222,11 @@ async def get_build_backend(
 
 
 async def generate_dockerfile(
-    python_version: str, is_reverse: bool, build_backend: Optional[str]
+    python_version: str, is_asgi: bool, build_backend: Optional[str]
 ):
     t = templates.get_template(
         "docker/reverse.Dockerfile.jinja"
-        if is_reverse
+        if is_asgi
         else "docker/forward.Dockerfile.jinja"
     )
     return await t.render_async(
@@ -231,6 +234,6 @@ async def generate_dockerfile(
     )
 
 
-async def generate_compose_file(is_reverse: bool):
+async def generate_compose_file(is_asgi: bool):
     t = templates.get_template("docker/docker-compose.yml.jinja")
-    return await t.render_async(is_reverse=is_reverse)
+    return await t.render_async(is_asgi=is_asgi)

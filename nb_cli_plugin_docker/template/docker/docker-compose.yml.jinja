@@ -1,6 +1,6 @@
 version: "3"
 
-{% if is_reverse %}
+{% if is_asgi %}
 x-config-host: &config-host ${HOST:-0.0.0.0}
 x-config-port: &config-port ${PORT:-8080}
 {% endif %}
@@ -8,7 +8,7 @@ x-config-port: &config-port ${PORT:-8080}
 services:
   nonebot:
     build: .
-    {% if is_reverse %}
+    {% if is_asgi %}
     ports:
       - *config-port
     {% endif %}
@@ -16,7 +16,7 @@ services:
       - .env.prod
     environment:
       ENVIRONMENT: prod
-      {% if is_reverse %}
+      {% if is_asgi %}
       HOST: *config-host
       PORT: *config-port
       {% endif %}

@@ -73,7 +73,7 @@ async def generate(ctx: click.Context, force: bool):
     python_version = await get_python_version(python_path=python_path)
     python_version = f"{python_version['major']}.{python_version['minor']}"
 
-    is_reverse = await get_driver_type(python_path=python_path, cwd=cwd)
+    is_asgi = await get_driver_type(python_path=python_path, cwd=cwd)
     build_backend = await get_build_backend(
         config_manager=ConfigManager(working_dir=cwd, python_path=python_path)
     )
@@ -81,19 +81,19 @@ async def generate(ctx: click.Context, force: bool):
     try:
         dockerfile = await generate_dockerfile(
             python_version=python_version,
-            is_reverse=is_reverse,
+            is_asgi=is_asgi,
             build_backend=build_backend,
         )
         await safe_write_file(cwd / "Dockerfile", dockerfile, force=force)
 
-        compose_file = await generate_compose_file(is_reverse=is_reverse)
+        compose_file = await generate_compose_file(is_asgi=is_asgi)
         await safe_write_file(cwd / "docker-compose.yml", compose_file, force=force)
 
         await safe_copy_dir(
             Path(__file__).parent / "static" / "common", cwd, force=force
         )
 
-        if is_reverse:
+        if is_asgi:
             await safe_copy_dir(
                 Path(__file__).parent / "static" / "reverse", cwd, force=force
             )
