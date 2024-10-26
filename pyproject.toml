@@ -24,11 +24,11 @@ nb-cli = "^1.1.0"
 noneprompt = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.5.0"
+ruff = "^0.7.0"
 isort = "^5.10.1"
 black = "^24.0.0"
 nonemoji = "^0.1.2"
-pre-commit = "^3.0.0"
+pre-commit = "^4.0.0"
 
 [tool.poetry.plugins.nb]
 docker = "nb_cli_plugin_docker.plugin:install"
