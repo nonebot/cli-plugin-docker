@@ -1,6 +1,6 @@
 from typing import cast
-from pathlib import Path
 
+import anyio
 import click
 from nb_cli import _
 from nb_cli.config import ConfigManager
@@ -69,6 +69,7 @@ async def generate(ctx: click.Context, force: bool):
     """Generate Dockerfile and docker-compose.yml."""
     python_path = await get_default_python()
     cwd = get_project_root()
+    async_cwd = anyio.Path(cwd)
 
     python_version = await get_python_version(python_path=python_path)
     python_version = f"{python_version['major']}.{python_version['minor']}"
@@ -84,18 +85,22 @@ async def generate(ctx: click.Context, force: bool):
             is_asgi=is_asgi,
             build_backend=build_backend,
         )
-        await safe_write_file(cwd / "Dockerfile", dockerfile, force=force)
+        await safe_write_file(async_cwd / "Dockerfile", dockerfile, force=force)
 
         compose_file = await generate_compose_file(is_asgi=is_asgi)
-        await safe_write_file(cwd / "docker-compose.yml", compose_file, force=force)
+        await safe_write_file(
+            async_cwd / "docker-compose.yml", compose_file, force=force
+        )
 
         await safe_copy_dir(
-            Path(__file__).parent / "static" / "common", cwd, force=force
+            anyio.Path(__file__).parent / "static" / "common", async_cwd, force=force
         )
 
         if is_asgi:
             await safe_copy_dir(
-                Path(__file__).parent / "static" / "reverse", cwd, force=force
+                anyio.Path(__file__).parent / "static" / "reverse",
+                async_cwd,
+                force=force,
             )
     except CancelledError:
         ctx.exit()
@@ -118,8 +123,8 @@ async def up(ctx: click.Context, force: bool, compose_args: list[str]):
 
     if (
         force
-        or not Path(cwd, "Dockerfile").exists()
-        or not Path(cwd, "docker-compose.yml").exists()
+        or not await anyio.Path(cwd, "Dockerfile").exists()
+        or not await anyio.Path(cwd, "docker-compose.yml").exists()
     ):
         await run_sync(ctx.invoke)(generate)
 
