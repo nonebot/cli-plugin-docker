@@ -3,23 +3,26 @@ FROM python:{{ python_version }} as requirements_stage
 
 WORKDIR /wheel
 
-RUN python -m pip install --user pipx
+RUN python -m pip install --user uv
 
-COPY ./pyproject.toml{% if build_backend == "poetry" %} \
-  ./poetry.lock{% elif build_backend == "pdm" %} \
-  ./pdm.lock{% elif build_backend == "pip" %} \
+COPY ./pyproject.toml{% if build_backend == "uv" %} \
+  ./uv.lock{% elif build_backend == "pdm" %} \
+  ./pdm.lock{% elif build_backend == "poetry" %}\
+  ./poetry.lock{% elif build_backend == "pip" %} \
   ./requirements.txt{% endif %} \
   /wheel/
 
 {% if build_backend == "poetry" %}
-RUN python -m pipx run --no-cache poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN python -m uv tool run --no-cache poetry export -f requirements.txt --output requirements.txt --without-hashes
 {% elif build_backend == "pdm" %}
-RUN python -m pipx run --no-cache pdm export -f requirements --output requirements.txt --without-hashes
+RUN python -m uv tool run --no-cache pdm export -f requirements --output requirements.txt --without-hashes
+{% elif build_backend == "uv" %}
+RUN python -m uv export -f requirements --output requirements.txt --without-hashes
 {% endif %}
 
 {% if build_backend %}
 RUN python -m pip wheel --wheel-dir=/wheel --no-cache-dir --requirement ./requirements.txt
 {% endif %}
 
-RUN python -m pipx run --no-cache nb-cli generate -f /tmp/bot.py
+RUN python -m uv tool run --no-cache --from nb-cli nb generate -f /tmp/bot.py
 {% endmacro %}

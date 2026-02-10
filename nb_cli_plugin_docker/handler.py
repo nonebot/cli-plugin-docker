@@ -14,6 +14,7 @@ from nb_cli.handlers import (
     get_default_python,
     get_nonebot_config,
     ensure_process_terminated,
+    probe_environment_manager,
 )
 
 from .exception import GetDriverTypeError, ComposeNotAvailable
@@ -207,16 +208,14 @@ async def get_driver_type(
 
 async def get_build_backend(
     config_manager: ConfigManager | None = None,
-) -> Literal["poetry", "pdm", "pip"] | None:
+) -> Literal["poetry", "pdm", "uv", "pip"] | None:
     if config_manager is None:
         config_manager = GLOBAL_CONFIG
 
-    if data := config_manager._get_data():
-        backend = data.get("build-system", {}).get("build-backend", "")
-        if "poetry" in backend:
-            return "poetry"
-        elif "pdm" in backend:
-            return "pdm"
+    inferred, _ = await probe_environment_manager(cwd=config_manager.working_dir)
+
+    if inferred != "pip":
+        return cast(Literal["uv", "pdm", "poetry"], inferred)
     if (config_manager.project_root / "requirements.txt").exists():
         return "pip"
 
