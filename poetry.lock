@@ -357,7 +357,7 @@ description = "Backport of PEP 654 (exception groups)"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
-markers = "python_version < \"3.11\""
+markers = "python_version == \"3.10\""
 files = [
     {file = "exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b"},
     {file = "exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"},
@@ -472,31 +472,6 @@ files = [
 
 [package.extras]
 all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
-
-[[package]]
-name = "importlib-metadata"
-version = "8.5.0"
-description = "Read metadata from Python packages"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-markers = "python_version == \"3.9\""
-files = [
-    {file = "importlib_metadata-8.5.0-py3-none-any.whl", hash = "sha256:45e54197d28b7a7f1559e60b95e7c567032b602131fbd588f1497f47880aa68b"},
-    {file = "importlib_metadata-8.5.0.tar.gz", hash = "sha256:71522656f0abace1d072b9e5481a48f07c138e00f079c38c8f883823f9c26bd7"},
-]
-
-[package.dependencies]
-zipp = ">=3.20"
-
-[package.extras]
-check = ["pytest-checkdocs (>=2.4)", "pytest-ruff (>=0.2.1) ; sys_platform != \"cygwin\""]
-cover = ["pytest-cov"]
-doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-enabler = ["pytest-enabler (>=2.2)"]
-perf = ["ipython"]
-test = ["flufl.flake8", "importlib-resources (>=1.3) ; python_version < \"3.9\"", "jaraco.test (>=5.4)", "packaging", "pyfakefs", "pytest (>=6,!=8.1.*)", "pytest-perf (>=0.9.2)"]
-type = ["pytest-mypy"]
 
 [[package]]
 name = "isort"
@@ -651,33 +626,11 @@ files = [
 
 [[package]]
 name = "mdit-py-plugins"
-version = "0.4.2"
-description = "Collection of plugins for markdown-it-py"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-markers = "python_version < \"3.13\""
-files = [
-    {file = "mdit_py_plugins-0.4.2-py3-none-any.whl", hash = "sha256:0c673c3f889399a33b95e88d2f0d111b4447bdfea7f237dab2d488f459835636"},
-    {file = "mdit_py_plugins-0.4.2.tar.gz", hash = "sha256:5f2cd1fdb606ddf152d37ec30e46101a60512bc0e5fa1a7002c36647b09e26b5"},
-]
-
-[package.dependencies]
-markdown-it-py = ">=1.0.0,<4.0.0"
-
-[package.extras]
-code-style = ["pre-commit"]
-rtd = ["myst-parser", "sphinx-book-theme"]
-testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
-
-[[package]]
-name = "mdit-py-plugins"
 version = "0.5.0"
 description = "Collection of plugins for markdown-it-py"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "python_version >= \"3.13\""
 files = [
     {file = "mdit_py_plugins-0.5.0-py3-none-any.whl", hash = "sha256:07a08422fc1936a5d26d146759e9155ea466e842f5ab2f7d2266dd084c8dab1f"},
     {file = "mdit_py_plugins-0.5.0.tar.gz", hash = "sha256:f4918cb50119f50446560513a8e311d574ff6aaed72606ddae6d35716fe809c6"},
@@ -717,14 +670,14 @@ files = [
 
 [[package]]
 name = "nb-cli"
-version = "1.5.0"
+version = "1.7.0"
 description = "CLI for nonebot2"
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "nb_cli-1.5.0-py3-none-any.whl", hash = "sha256:d44a49321050a9a85d6f15f8b2a6eb45936cfd9eb02a26a54bf495b802a1564f"},
-    {file = "nb_cli-1.5.0.tar.gz", hash = "sha256:bd9c418dabe29b8c4da76e2cee136ca192bbc687912524fb36f4916d14d84b3f"},
+    {file = "nb_cli-1.7.0-py3-none-any.whl", hash = "sha256:032605794f9ad3423db920963f0d957edfb1a47235f1e7dcc1eae7a547d1c35d"},
+    {file = "nb_cli-1.7.0.tar.gz", hash = "sha256:7acd31530070042ea5910d8b789b616d867216db34720726cc8a1587e4ed2740"},
 ]
 
 [package.dependencies]
@@ -733,12 +686,12 @@ cashews = ">=6.0,<8.0"
 click = ">=8.1,<9.0"
 cookiecutter = ">=2.2,<3.0"
 httpx = ">=0.18,<1.0"
-importlib-metadata = {version = ">=4.6", markers = "python_version < \"3.10\""}
 jinja2 = ">=3.0,<4.0"
 noneprompt = ">=0.1.10,<1.0.0"
 nonestorage = ">=0.1.0"
+packaging = ">=25.0"
+pip = ">=25.3"
 pydantic = ">=1.10.0,<2.5.0 || >2.5.0,<2.5.1 || >2.5.1,<3.0.0"
-pyfiglet = ">=1.0.1,<2.0.0"
 rich = ">=14.1.0"
 textual = ">=5.3.0"
 tomlkit = ">=0.10,<1.0"
@@ -803,14 +756,14 @@ files = [
 
 [[package]]
 name = "packaging"
-version = "24.1"
+version = "26.0"
 description = "Core utilities for Python packages"
 optional = false
 python-versions = ">=3.8"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
-    {file = "packaging-24.1-py3-none-any.whl", hash = "sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124"},
-    {file = "packaging-24.1.tar.gz", hash = "sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002"},
+    {file = "packaging-26.0-py3-none-any.whl", hash = "sha256:b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529"},
+    {file = "packaging-26.0.tar.gz", hash = "sha256:00243ae351a257117b6a241061796684b084ed1c516a08c48a3f7e147a9d80b4"},
 ]
 
 [[package]]
@@ -823,6 +776,18 @@ groups = ["dev"]
 files = [
     {file = "pathspec-0.12.1-py3-none-any.whl", hash = "sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08"},
     {file = "pathspec-0.12.1.tar.gz", hash = "sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712"},
+]
+
+[[package]]
+name = "pip"
+version = "26.0.1"
+description = "The PyPA recommended tool for installing Python packages."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pip-26.0.1-py3-none-any.whl", hash = "sha256:bdb1b08f4274833d62c1aa29e20907365a2ceb950410df15fc9521bad440122b"},
+    {file = "pip-26.0.1.tar.gz", hash = "sha256:c4037d8a277c89b320abe636d59f91e6d0922d08a05b60e85e53b296613346d8"},
 ]
 
 [[package]]
@@ -1001,18 +966,6 @@ files = [
 
 [package.dependencies]
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
-
-[[package]]
-name = "pyfiglet"
-version = "1.0.2"
-description = "Pure-python FIGlet implementation"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "pyfiglet-1.0.2-py3-none-any.whl", hash = "sha256:889b351d79c99e50a3f619c8f8e6ffdb27fd8c939fc43ecbd7559bd57d5f93ea"},
-    {file = "pyfiglet-1.0.2.tar.gz", hash = "sha256:758788018ab8faaddc0984e1ea05ff330d3c64be663c513cc1f105f6a3066dab"},
-]
 
 [[package]]
 name = "pygments"
@@ -1260,7 +1213,7 @@ description = "A lil' TOML parser"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
-markers = "python_version < \"3.11\""
+markers = "python_version == \"3.10\""
 files = [
     {file = "tomli-2.0.2-py3-none-any.whl", hash = "sha256:2ebe24485c53d303f690b0ec092806a085f07af5a5aa1464f3931eec36caaa38"},
     {file = "tomli-2.0.2.tar.gz", hash = "sha256:d46d457a85337051c36524bc5349dd91b1877838e2979ac5ced3e710ed8a60ed"},
@@ -1301,7 +1254,7 @@ files = [
     {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
     {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
-markers = {dev = "python_version < \"3.11\""}
+markers = {dev = "python_version == \"3.10\""}
 
 [[package]]
 name = "uc-micro-py"
@@ -1491,28 +1444,7 @@ files = [
     {file = "wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"},
 ]
 
-[[package]]
-name = "zipp"
-version = "3.20.2"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-markers = "python_version == \"3.9\""
-files = [
-    {file = "zipp-3.20.2-py3-none-any.whl", hash = "sha256:a817ac80d6cf4b23bf7f2828b7cabf326f15a001bea8b1f9b49631780ba28350"},
-    {file = "zipp-3.20.2.tar.gz", hash = "sha256:bc9eb26f4506fda01b81bcde0ca78103b6e62f991b381fec825435c836edbc29"},
-]
-
-[package.extras]
-check = ["pytest-checkdocs (>=2.4)", "pytest-ruff (>=0.2.1) ; sys_platform != \"cygwin\""]
-cover = ["pytest-cov"]
-doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-enabler = ["pytest-enabler (>=2.2)"]
-test = ["big-O", "importlib-resources ; python_version < \"3.9\"", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-itertools", "pytest (>=6,!=8.1.*)", "pytest-ignore-flaky"]
-type = ["pytest-mypy"]
-
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.9"
-content-hash = "f4300b135f685435d1bc89726723fbd6685a377f98d566f5f3a29d027fe7b39b"
+python-versions = "^3.10"
+content-hash = "52920517b313cb738d93f434457f37d4cd536673ec473601b1c3d535ee1b8d95"
