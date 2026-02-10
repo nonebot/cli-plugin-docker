@@ -1,12 +1,11 @@
 from pathlib import Path
-from typing import Union, Optional
 
 from noneprompt import ConfirmPrompt
 
 
 async def safe_write_file(
-    file_path: Path, content: Union[str, bytes], force: bool = False
-) -> Optional[int]:
+    file_path: Path, content: str | bytes, force: bool = False
+) -> int | None:
     directory = file_path.parent
     if not directory.exists():
         directory.mkdir(exist_ok=True, parents=True)

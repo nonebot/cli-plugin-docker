@@ -2,7 +2,7 @@ import json
 import asyncio
 from pathlib import Path
 from dataclasses import dataclass
-from typing import IO, TYPE_CHECKING, Any, Union, Literal, Optional, cast
+from typing import IO, TYPE_CHECKING, Any, Literal, cast
 
 from nb_cli import cache
 from jinja2 import Environment, FileSystemLoader
@@ -67,11 +67,11 @@ else:
 
 @ensure_process_terminated
 async def call_compose(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     if cwd is None:
         cwd = get_project_root()
@@ -88,11 +88,11 @@ async def call_compose(
 
 
 async def compose_up(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     return await call_compose(
         ["up", "-d", "--build", *(compose_args or [])],
@@ -104,11 +104,11 @@ async def compose_up(
 
 
 async def compose_down(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     return await call_compose(
         ["down", *(compose_args or [])],
@@ -120,11 +120,11 @@ async def compose_down(
 
 
 async def compose_build(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     return await call_compose(
         ["build", *(compose_args or [])],
@@ -136,11 +136,11 @@ async def compose_build(
 
 
 async def compose_logs(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     return await call_compose(
         ["logs", *(compose_args or [])],
@@ -152,11 +152,11 @@ async def compose_logs(
 
 
 async def compose_ps(
-    compose_args: Optional[list[str]] = None,
-    cwd: Optional[Path] = None,
-    stdin: Optional[Union[IO[Any], int]] = None,
-    stdout: Optional[Union[IO[Any], int]] = None,
-    stderr: Optional[Union[IO[Any], int]] = None,
+    compose_args: list[str] | None = None,
+    cwd: Path | None = None,
+    stdin: IO[Any] | int | None = None,
+    stdout: IO[Any] | int | None = None,
+    stderr: IO[Any] | int | None = None,
 ) -> asyncio.subprocess.Process:
     return await call_compose(
         ["ps", *(compose_args or [])],
@@ -169,10 +169,10 @@ async def compose_ps(
 
 @requires_nonebot
 async def get_driver_type(
-    adapters: Optional[list[SimpleInfo]] = None,
-    builtin_plugins: Optional[list[str]] = None,
-    python_path: Optional[str] = None,
-    cwd: Optional[Path] = None,
+    adapters: list[SimpleInfo] | None = None,
+    builtin_plugins: list[str] | None = None,
+    python_path: str | None = None,
+    cwd: Path | None = None,
 ) -> bool:
     bot_config = get_nonebot_config()
     if adapters is None:
@@ -206,8 +206,8 @@ async def get_driver_type(
 
 
 async def get_build_backend(
-    config_manager: Optional[ConfigManager] = None,
-) -> Optional[Literal["poetry", "pdm", "pip"]]:
+    config_manager: ConfigManager | None = None,
+) -> Literal["poetry", "pdm", "pip"] | None:
     if config_manager is None:
         config_manager = GLOBAL_CONFIG
 
@@ -222,7 +222,7 @@ async def get_build_backend(
 
 
 async def generate_dockerfile(
-    python_version: str, is_asgi: bool, build_backend: Optional[str]
+    python_version: str, is_asgi: bool, build_backend: str | None
 ):
     t = templates.get_template(
         "docker/reverse.Dockerfile.jinja"
