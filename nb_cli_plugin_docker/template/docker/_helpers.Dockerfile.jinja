@@ -17,7 +17,7 @@ RUN python -m uv tool run --no-cache poetry export -f requirements.txt --output 
 {% elif build_backend == "pdm" %}
 RUN python -m uv tool run --no-cache pdm export -f requirements --output requirements.txt --without-hashes
 {% elif build_backend == "uv" %}
-RUN python -m uv export -f requirements --output requirements.txt --without-hashes
+RUN python -m uv export --format requirements.txt --output-file requirements.txt --no-hashes
 {% endif %}
 
 {% if build_backend %}
