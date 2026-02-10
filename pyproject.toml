@@ -24,7 +24,7 @@ nb-cli = "^1.7.0"
 noneprompt = "^0.1.7"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.7.0"
+ruff = "^0.15.0"
 isort = "^5.10.1"
 black = "^24.0.0"
 nonemoji = "^0.1.2"
